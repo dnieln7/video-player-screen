@@ -35,6 +35,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         ..initialize().then((_) => setState(() {}));
     }
 
+    controller.setLooping(true);
+
     opacityController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 300),
@@ -57,13 +59,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         title: Text(widget.videoSource.title),
         backgroundColor: Colors.black,
       ),
-      body: GestureDetector(
-        onTap: onVideoClicked,
-        child: Center(
-          child: controller.value.isInitialized
-              ? Stack(
+      body: Center(
+        child: controller.value.isInitialized
+            ? GestureDetector(
+                onTap: onVideoClicked,
+                child: Stack(
                   alignment: Alignment.center,
                   children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.width,
+                      color: Colors.transparent,
+                    ),
                     AspectRatio(
                       aspectRatio: controller.value.aspectRatio,
                       child: VideoPlayer(
@@ -121,9 +128,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                       ),
                     ),
                   ],
-                )
-              : CircularProgressIndicator(),
-        ),
+                ),
+              )
+            : CircularProgressIndicator(),
       ),
     );
   }
