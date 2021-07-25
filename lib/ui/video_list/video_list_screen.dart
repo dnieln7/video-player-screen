@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:video_player_screen/data/source/video_log_data_source.dart';
 import 'package:video_player_screen/data/source/video_log_in_memory_data_source.dart';
 import 'package:video_player_screen/domain/video_log.dart';
 import 'package:video_player_screen/utils/validation.dart';
+import 'package:video_player_screen/widget/picture_chooser_on_close.dart';
 import 'package:video_player_screen/widget/video_log_list_tile.dart';
 
 class VideoListScreen extends StatefulWidget {
@@ -81,9 +84,18 @@ class _VideoListScreenState extends State<VideoListScreen> {
                         textInputAction: TextInputAction.done,
                       ),
                       SizedBox(height: 10),
-                      OutlinedButton(
-                        onPressed: saveVideo,
-                        child: Text('SAVE'),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          TextButton(
+                            onPressed: saveVideo,
+                            child: Text('SAVE'),
+                          ),
+                          TextButton(
+                            onPressed: openSelector,
+                            child: Text('FROM STORAGE'),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -107,6 +119,26 @@ class _VideoListScreenState extends State<VideoListScreen> {
     );
   }
 
+  void openSelector() {
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => PictureChooseOnClose(),
+    ).then((result) {
+      print(result);
+      if (result != null) {
+        dataSource.save(
+          VideoLog.fromFile(
+            title: "From storage",
+            file: result as File,
+            date: DateTime.now(),
+          ),
+        );
+
+        fetchVideos();
+      }
+    });
+  }
+
   void fetchVideos() {
     setState(() => logs = dataSource.findAll());
   }
@@ -114,7 +146,9 @@ class _VideoListScreenState extends State<VideoListScreen> {
   void saveVideo() {
     if (formKey.currentState.validate()) {
       formKey.currentState.save();
-      dataSource.save(VideoLog(title: title, url: url, date: DateTime.now()));
+      dataSource.save(
+        VideoLog.fromUrl(title: title, url: url, date: DateTime.now()),
+      );
       fetchVideos();
       formKey.currentState.reset();
     }

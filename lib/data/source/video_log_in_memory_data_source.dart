@@ -3,7 +3,7 @@ import 'package:video_player_screen/domain/video_log.dart';
 
 class VideoLogInMemoryDataSource implements VideoLogDataSource {
   List<VideoLog> logs = [
-    VideoLog(
+    VideoLog.fromUrl(
       title: 'Sample video',
       url:
           'https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_640_3MG.mp4',

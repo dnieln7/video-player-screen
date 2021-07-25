@@ -24,10 +24,9 @@ class VideoLogListTile extends StatelessWidget {
   void navigateToVideoPlayer(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (ctx) => VideoPlayerScreen(
-        videoSource: NetWorkVideoSource(
-          title: videoLog.title,
-          source: videoLog.url,
-        ),
+        videoSource: videoLog.type == VideoLogType.Network
+            ? NetWorkVideoSource(title: videoLog.title, source: videoLog.url)
+            : FileVideoSource(title: videoLog.title, source: videoLog.file),
       ),
     ));
   }
