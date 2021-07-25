@@ -60,7 +60,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         backgroundColor: Colors.black,
       ),
       body: Center(
-        child: controller.value.isInitialized
+        child: controller.value.initialized
             ? GestureDetector(
                 onTap: onVideoClicked,
                 child: Stack(
