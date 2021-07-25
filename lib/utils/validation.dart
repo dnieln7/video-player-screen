@@ -1,4 +1,4 @@
-String validateEmpty(String text) {
+String? validateEmpty(String text) {
   if (text.isEmpty) {
     return 'This field is required';
   }

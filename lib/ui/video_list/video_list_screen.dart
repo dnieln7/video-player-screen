@@ -17,10 +17,10 @@ class VideoListScreen extends StatefulWidget {
 class _VideoListScreenState extends State<VideoListScreen> {
   final GlobalKey<FormState> formKey = GlobalKey();
   final VideoLogDataSource dataSource = VideoLogInMemoryDataSource();
-  List<VideoLog> logs;
 
-  String title;
-  String url;
+  late List<VideoLog> logs;
+  late String title;
+  late String url;
 
   @override
   void initState() {
@@ -65,8 +65,8 @@ class _VideoListScreenState extends State<VideoListScreen> {
                           border: OutlineInputBorder(),
                         ),
                         initialValue: '',
-                        onSaved: (newValue) => setState(() => title = newValue),
-                        validator: (value) => validateEmpty(value),
+                        onSaved: (value) => setState(() => title = value ?? ''),
+                        validator: (value) => validateEmpty(value ?? ''),
                         keyboardType: TextInputType.text,
                         textInputAction: TextInputAction.next,
                       ),
@@ -78,8 +78,8 @@ class _VideoListScreenState extends State<VideoListScreen> {
                           border: OutlineInputBorder(),
                         ),
                         initialValue: '',
-                        onSaved: (newValue) => setState(() => url = newValue),
-                        validator: (value) => validateEmpty(value),
+                        onSaved: (value) => setState(() => url = value ?? ''),
+                        validator: (value) => validateEmpty(value ?? ''),
                         keyboardType: TextInputType.url,
                         textInputAction: TextInputAction.done,
                       ),
@@ -144,13 +144,13 @@ class _VideoListScreenState extends State<VideoListScreen> {
   }
 
   void saveVideo() {
-    if (formKey.currentState.validate()) {
-      formKey.currentState.save();
+    if (formKey.currentState?.validate() ?? false) {
+      formKey.currentState!.save();
       dataSource.save(
         VideoLog.fromUrl(title: title, url: url, date: DateTime.now()),
       );
       fetchVideos();
-      formKey.currentState.reset();
+      formKey.currentState!.reset();
     }
   }
 }

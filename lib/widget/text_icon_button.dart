@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 class TextIconButton extends StatelessWidget {
   TextIconButton({
-    @required this.icon,
-    @required this.label,
+    required this.icon,
+    required this.label,
     this.action,
   });
 
   final IconData icon;
   final String label;
-  final Function action;
+  final void Function()? action;
 
   @override
   Widget build(BuildContext context) {

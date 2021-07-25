@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
-  VideoPlayerScreen({@required this.videoSource});
+  VideoPlayerScreen({required this.videoSource});
 
   final VideoSource videoSource;
 
@@ -17,11 +17,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
     with SingleTickerProviderStateMixin {
   bool showUi = true;
 
-  VideoPlayerController controller;
-  Timer uiTimer;
+  late VideoPlayerController controller;
+  late AnimationController opacityController;
+  late Animation<double> opacityAnimation;
 
-  AnimationController opacityController;
-  Animation<double> opacityAnimation;
+  Timer? uiTimer;
 
   @override
   void initState() {
@@ -139,7 +139,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   void dispose() {
     super.dispose();
     controller.dispose();
-    uiTimer.cancel();
+    uiTimer?.cancel();
   }
 
   Timer startTimeout() {
@@ -149,8 +149,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   }
 
   void cancelTimeout() {
-    if (uiTimer != null && uiTimer.isActive) {
-      uiTimer.cancel();
+    if (uiTimer?.isActive ?? false) {
+      uiTimer?.cancel();
     }
   }
 
@@ -191,7 +191,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
 
 class VideoDurationIndicator extends StatefulWidget {
   VideoDurationIndicator({
-    @required this.controller,
+    required this.controller,
   });
 
   final VideoPlayerController controller;
@@ -201,9 +201,10 @@ class VideoDurationIndicator extends StatefulWidget {
 }
 
 class _VideoDurationIndicatorState extends State<VideoDurationIndicator> {
-  Duration currentPosition;
-  Duration totalDuration;
-  Timer currentPositionTimer;
+  late Duration totalDuration;
+
+  Duration? currentPosition;
+  Timer? currentPositionTimer;
 
   @override
   void initState() {
@@ -215,9 +216,10 @@ class _VideoDurationIndicatorState extends State<VideoDurationIndicator> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).textTheme.caption.copyWith(
-          color: Colors.white,
-        );
+    TextStyle? theme = Theme.of(context).textTheme.caption?.copyWith(
+              color: Colors.white,
+            ) ??
+        null;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -237,7 +239,7 @@ class _VideoDurationIndicatorState extends State<VideoDurationIndicator> {
   @override
   void dispose() {
     super.dispose();
-    currentPositionTimer.cancel();
+    currentPositionTimer?.cancel();
   }
 
   void getCurrentPosition() {
@@ -247,18 +249,18 @@ class _VideoDurationIndicatorState extends State<VideoDurationIndicator> {
 }
 
 abstract class VideoSource<T> {
-  VideoSource({@required this.title, @required this.source});
+  VideoSource({required this.title, required this.source});
 
   final String title;
   final T source;
 }
 
 class NetWorkVideoSource extends VideoSource<String> {
-  NetWorkVideoSource({@required String title, @required String source})
+  NetWorkVideoSource({required String title, required String source})
       : super(title: title, source: source);
 }
 
 class FileVideoSource extends VideoSource<File> {
-  FileVideoSource({@required String title, @required File source})
+  FileVideoSource({required String title, required File source})
       : super(title: title, source: source);
 }
